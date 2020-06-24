@@ -242,8 +242,8 @@ def main():
         print("Self paced status: {}".format(check_self_paced(epoch)))
         print("Mean Teacher status: {}".format(check_mean_teacher(epoch)))
         if check_mean_teacher(epoch) and not check_mean_teacher(epoch - 1) and not switched:
-            ema_model1.load_state_dict(best_model1.parameters())
-            ema_model2.load_state_dict(best_model2.parameters())
+            ema_model1.load_state_dict(best_model1.state_dict())
+            ema_model2.load_state_dict(best_model2.state_dict())
             switched = True
             print("SWITCHED!")
 
