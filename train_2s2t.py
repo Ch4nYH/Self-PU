@@ -236,14 +236,14 @@ def main():
     best_acc3 = 0
     best_acc4 = 0
     best_acc = 0
-    best_model1_weight = model1.parameters()
-    best_model2_weight = model2.parameters()
+    best_model1 = copy.deepcopy(model1)
+    best_model2 = copy.deepcopy(model2)
     for epoch in range(args.epochs):
         print("Self paced status: {}".format(check_self_paced(epoch)))
         print("Mean Teacher status: {}".format(check_mean_teacher(epoch)))
         if check_mean_teacher(epoch) and not check_mean_teacher(epoch - 1) and not switched:
-            ema_model1.load_state_dict(best_model1_weight)
-            ema_model2.load_state_dict(best_model2_weight)
+            ema_model1.load_state_dict(best_model1.parameters())
+            ema_model2.load_state_dict(best_model2.parameters())
             switched = True
             print("SWITCHED!")
 
@@ -254,9 +254,9 @@ def main():
         stats_._update(trainPacc, trainNacc, trainPNacc, valPacc, valNacc, valPNacc1)
 
         if valPNacc1 > best_acc1 and not check_mean_teacher(epoch):
-            best_model1_weight = copy.deepcopy(model1.parameters())
+            best_model1 = copy.deepcopy(model1)
         if valPNacc3 > best_acc3 and not check_mean_teacher(epoch):
-            best_model2_weight = copy.deepcopy(model2.parameters())
+            best_model2 = copy.deepcopy(model2)
         
         best_acc1 = max(valPNacc1, best_acc1)
         best_acc2 = max(valPNacc2, best_acc2)
