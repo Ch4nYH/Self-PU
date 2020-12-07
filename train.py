@@ -77,7 +77,6 @@ parser.add_argument('--soft-label', action="store_true")
 parser.add_argument('--dataset', type=str, default="mnist")
 parser.add_argument('--datapath', type=str, default="")
 
-
 results = np.zeros(61000)
 switched = False
 step = 0
@@ -349,6 +348,7 @@ def train(clean_loader, noisy_loader, model, ema_model, criterion, consistency_c
     
     #if epoch > args.self_paced_start: criterion.update_p(0.05)
     #criterion.update_p(0.49)
+    '''
     if args.update_pi:
         if (args.dataset == 'cifar'):
             #self_paced_pick = 0
@@ -357,8 +357,9 @@ def train(clean_loader, noisy_loader, model, ema_model, criterion, consistency_c
         elif args.dataset == 'mnist':
             criterion.update_p((30000 - self_paced_pick / 2) / (60000 - self_paced_pick))
             print("Setting Pi_P to {}".format((30000 - self_paced_pick / 2) / (60000 - self_paced_pick)))
+    '''
 
-    if epoch <= args.noisy_stop:
+    if True:
         for i, (X, Y, _, T, ids, p) in enumerate(noisy_loader):
             if args.gpu == None:
                 X = X.cuda()
@@ -661,7 +662,7 @@ def check_self_paced(epoch):
     else: return True
 
 def check_noisy(epoch):
-    if epoch >= args.self_paced_start and args.turnoff_noisy:
+    if epoch >= args.self_paced_start: #and args.turnoff_noisy:
         return False
     else:
         return True
